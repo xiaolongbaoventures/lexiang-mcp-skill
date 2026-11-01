@@ -14,6 +14,7 @@
 | 块创建不完整 | 缺少顶层 children | 确保 children 包含所有顶层块 ID |
 | 智能表格写入返回 999 | CellValue 结构不符合定义 | `text` 写成 `[{"text_run":{"content":"..."}}]`，详见下文错误五 |
 | 直调业务工具报 not found | 当前只暴露元工具（代理模式）却直接调用业务工具 | 改用 `call_tool(tool_name=...)` 代理调用，详见下文错误六 |
+| draft 发布成功但页面空白（静默失败） | draft 系列只写 Markdown 文件版本，不写 page block 正文 | 写正文改用 `entry_import_content_to_entry` / `block_update_page`，写后用 `block_fetch_page` 回读校验，详见 `references/draft.md` |
 
 ---
 

@@ -64,7 +64,7 @@ AI 判断：这是平台功能缺失，不是用户操作问题
 | 场景 | 渠道 |
 | ---- | ---- |
 | 内部运行时 | 使用当前 runtime 文档指定的内部仓库或反馈流程 |
-| 外部公开版 | `https://github.com/tencent-lexiang/lexiang-skill` |
+| 外部公开版 | `https://github.com/tencent-lexiang/lexiang-mcp-skill` |
 
 ### 反馈流程
 

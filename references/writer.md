@@ -75,7 +75,10 @@
 
 ### 草稿工作流
 
-当用户要求「先存草稿」「保存为草稿」或需要在已有页面写草稿再发布时：
+> ⚠️ draft 系列只写条目的 Markdown **文件版本**，**不写入 page 的 block 正文**（发布成功但页面可能空白）。
+> 写入/重写页面正文请用 `entry_import_content`（新建）、`entry_import_content_to_entry`（整页覆盖）或 `block_update_page`（局部编辑），不要把草稿工作流当作写页面的主路径。
+
+当用户明确要求「先存草稿」「保存为草稿」或需要管理某个页面的草稿时：
 
 ```
 Step 1: draft_save_markdown_draft(entry_id, revision_id, content, seq=0)
@@ -84,8 +87,11 @@ Step 1: draft_save_markdown_draft(entry_id, revision_id, content, seq=0)
 Step 2（可选）: draft_describe_markdown_draft(entry_id)
   → 查看草稿内容确认
 
-Step 3: draft_publish_markdown_draft(entry_id, revision_id, content?)
-  → 发布为正式版本（可在发布时传 content覆盖草稿内容）
+Step 3: draft_publish_markdown_draft(entry_id, revision_id, content)
+  → 发布为正式版本（content 实测必填）
+
+Step 4: block_fetch_page(entry_id, render_mode="markdown")
+  → 回读校验页面正文；为空说明正文未写入，改用 entry_import_content_to_entry
 ```
 
 > 详见 `references/draft.md`
