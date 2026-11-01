@@ -64,12 +64,15 @@
 
 链接拼接规则见 `references/base.md`（`{domain}` 来源、三级域名判断、`company_from` 获取优先级）。
 
-根据返回的 `target_type` 拼接路径部分（搜索独有）：
+知识条目（无论 `target_type` 是 `kb_page`、`kb_file` 还是 `kb_video`）统一使用条目页路径：
 
 | target_type | 路径格式 |
 |-------------|----------|
-| `kb_page` | `/pages/<target_id>` |
-| `kb_file` / `kb_video` | `/teams/<team_id>/docs/<target_id>` |
+| `kb_page` / `kb_file` / `kb_video` | `/pages/<entry_id>` |
+
+> ⚠️ **不要使用 `/teams/<team_id>/docs/<id>`**：该路径在乐享 v2 下会跳转到 AI 首页（`/c/ai`），无法回到原文。
+> `<entry_id>` 为条目 ID：若搜索结果的 `target_id` 是文件 ID 而非条目 ID（不确定时用 `entry_describe_entry` 校验），应使用对应的条目 ID。
+> 顶级域名下同样要保留 `?company_from=` 参数（见 `references/base.md`）。
 
 ---
 
