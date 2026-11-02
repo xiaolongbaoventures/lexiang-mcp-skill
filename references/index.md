@@ -13,7 +13,8 @@
 | 搜索文档/阅读内容/语义检索/分析文件内容 | search.md | 实体召回、RAG 切片、条目与文件 AI 解析、目录浏览 |
 | 创建文档/写入内容/导入/公众号收藏 | writer.md | import_content、create_entry、hyperlink |
 | 编辑已有页面/Block 增删改移 | blocks.md | Block 操作、批量更新、Markdown 转 Block |
-| 上传/下载文件本体（PDF/Word/图片等） | files.md | 三步上传流程、MIME 类型、更新文件、下载（仅原始文件需求） |
+| 上传/下载文件本体（PDF/Word/图片等） | files.md | 三步上传流程、MIME 类型、更新文件、下载 |
+| 给用户看/发图片、附件、视频 | files.md | 下载到本地（`scripts/fetch_media.py`）后用本地路径展示、50MB 确认、10066 处理 |
 | 导入外部数据/腾讯会议 | connectors.md | 会议录制搜索/导入 |
 | 检查/更新/回滚本 Skill | update.md | update.py check/apply/rollback、用户确认流程 |
 
@@ -28,6 +29,7 @@
 | 读取后编辑 | search.md → blocks.md |
 | 分析文件（PDF/PPT/Word）内容 | search.md（直接 AI 解析，不下载） |
 | 上传文件 | files.md |
+| 给用户看图片/文件/视频 | search.md（找条目）→ files.md（下载到本地展示） |
 | 会议导入 | connectors.md → writer.md |
 | 更新 Skill | update.md |
 | 排查错误 | common-errors.md |

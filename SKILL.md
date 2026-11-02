@@ -20,6 +20,7 @@ description: "乐享知识库 MCP 全功能 Skill。当用户提到「乐享」�
 6. **大批量保护**：文件/条目数量 > 20 个时，**必须分批执行**（每批 ≤ 20 个）；操作前告知用户数量和策略，禁止一次性提交导致 token 超限，详见 `references/files.md`
 7. **安装/配置完成时不加提示**：只汇报完成的工作和验证结果，不预先提示 Token 续期或「内置连接器会忽略手动配置」，这两类提示只在实际出现过期/401 或检测到冲突时给出，详见 `references/setup.md`
 8. **版本更新检查**：每个会话首次使用乐享时，在本 Skill 目录运行 `python3 scripts/update.py check`，不可用（报错/无输出/非 JSON）时依次换 `python`、`py -3`、`node scripts/update.mjs`、（Windows）`powershell -NoProfile -ExecutionPolicy Bypass -File scripts/update.ps1`，详见 `references/update.md`；都不可用或结果不是 `update_available` 时**直接忽略，继续用户任务**。若为 `update_available`：**先完成用户任务**，再在回复末尾加**一行**询问是否更新到新版本（附 `notes`）；**仅在用户明确同意后**运行 `apply`，更新后提示用户新开对话生效。**禁止静默自动更新**。用户说「检查乐享 skill 更新」「乐享 skill 自检」「更新乐享 skill」「升级乐享 skill」「回滚乐享 skill」「乐享 skill 是什么版本」等，或用其他说法要求检查/更新/自检本 Skill 时，按 `references/update.md`「用户主动要求」处理（立即检查，不受间隔限制）
+9. **图片/文件/视频给用户看**：用户要看/要知识库里的图片、附件、视频，或回答要引用某张图/某个文件时，**默认先下载到本地**（`file_download_file` → `scripts/fetch_media.py`，默认存 `~/Downloads/lexiang/`），图片用 `![文件名](本地绝对路径)` 内嵌，文件/视频给本地路径链接 + 乐享 `/pages/<entry_id>` 链接；**禁止**把远程/签名 URL 当图片或文件给用户（会显示破图且会过期）。超过 50MB 先问；返回 10066 时说明当前账号没有该条目的下载权限、建议找知识库管理员/部门负责人开通，**不重试、不绕过、不拿别的内容顶替**。详见 `references/files.md`「给用户看/发图片、文件、视频」
 
 ---
 
@@ -60,6 +61,7 @@ description: "乐享知识库 MCP 全功能 Skill。当用户提到「乐享」�
 | 编辑已有页面 / Block 操作 | `references/blocks.md` | 「修改这个页面」「加个标题」「删掉这段」「在 /pages/xxx 里…」 |
 | 分析/引用文件内容（PDF/PPT/Word/图片） | `references/search.md` | 「这个文件讲了什么」「分析这份 PDF/方案」「引用的文档内容」 |
 | 上传/下载文件本体（PDF/Word/图片等） | `references/files.md` | 「传个 PDF」「上传文件」「下载这个文件」 |
+| 看/要图片、附件、视频（下载到本地展示） | `references/files.md`「给用户看/发图片、文件、视频」 | 「把知识库里的图发给我」「这个附件给我」「放一下那个视频」「有没有相关的图」 |
 | 导入腾讯会议 | `references/connectors.md` | 「把会议录制导入」「导入会议录制」 |
 | 智能表格 / 结构化数据 | `references/smartsheet.md` | 「智能表格」「乐享表格」「表格里的数据」「新增一行」「查询记录」 |
 | 草稿 / 存草稿 / 发布 | `references/draft.md` | 「先存草稿」「保存为草稿」「发布草稿」「查看草稿」 |
@@ -76,6 +78,7 @@ description: "乐享知识库 MCP 全功能 Skill。当用户提到「乐享」�
 | 用户提供 `/pages/xxx` 链接 + 仅要求「读/总结」 | `references/search.md` | **只读**操作 |
 | 上传 PDF/Word/图片 | `references/files.md` | 二进制文件，非文本文档 |
 | 分析/引用文件（PDF/PPT/Word/图片）的内容 | `references/search.md` → 直接 AI 解析 | **用 `entry_describe_ai_parse_content` 读解析文本，不要下载文件再本地解析** |
+| 用户要**看/拿到**图片、文件、视频本身 | `references/files.md` → 下载到本地展示 | 图片用本地绝对路径内嵌，**不要**给远程/签名 URL |
 | 创建 Markdown 文本文档 | `references/writer.md` | 文本内容，非二进制 |
 | 「乐享里有一篇关于 X 的文档」 | `references/search.md` → 先搜索 | **必须先检索**，不能直接回答 |
 | 「看看乐享里 XX 的写作风格」 | `references/search.md` → 先读取 | **必须先读取内容**，不能凭空分析 |
@@ -88,6 +91,7 @@ description: "乐享知识库 MCP 全功能 Skill。当用户提到「乐享」�
 - **搜索后写入**：先 `references/search.md` → 再 `references/writer.md`
 - **读取后编辑**：先 `references/search.md` → 再 `references/blocks.md`
 - **上传后记录**：先 `references/files.md` → 再 `references/writer.md`
+- **搜到后给图/文件**：先 `references/search.md` 找到条目 → 再 `references/files.md`「给用户看/发图片、文件、视频」下载展示
 - **生成内容+保存**：用户要求「帮我写一篇 X 并保存到知识库/个人知识库」→ 先生成内容，再读取 `references/writer.md` 执行保存；若未指定目标，默认写入个人知识库（见 writer.md 中「未指定知识库时写入个人知识库」）
 
 ---
@@ -115,7 +119,7 @@ MCP Tool: whoami
 | `references/search.md` | 关键词/语义搜索、内容读取（含文件附件 AI 解析）、目录浏览 |
 | `references/writer.md` | 新建文档、导入内容、公众号收藏 |
 | `references/blocks.md` | 已有页面的 Block 级增删改移 |
-| `references/files.md` | 二进制文件上传/下载（三步流程）；内容分析优先直接解析，下载仅限原始文件需求 |
+| `references/files.md` | 二进制文件上传/下载（三步流程）；图片/文件/视频下载到本地展示（`scripts/fetch_media.py`）；内容分析优先直接解析 |
 | `references/connectors.md` | 腾讯会议录制导入 |
 | `references/smartsheet.md` | 智能表格增删查改、schema 管理 |
 | `references/draft.md` | Markdown 草稿保存、发布、管理 |

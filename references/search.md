@@ -89,6 +89,12 @@
 > **禁止**先 `file_download_file` 下载再本地解析。下载仅用于需要原始二进制的场景
 > （本地再编辑、格式转换、版式还原），见 `references/files.md`。
 
+> 🖼️ **用户要看/要图片、文件、视频本身**（「把那张图发给我」），或回答里要把某张图/某个文件给用户看：
+> 搜到条目后按 `references/files.md`「给用户看/发图片、文件、视频」**下载到本地再展示**——图片 `![文件名](本地绝对路径)`，
+> 文件/视频给本地路径链接 + `/pages/<entry_id>` 链接。**不要**把 `file_download_file` 的远程签名 URL 写进 `![]()`（会破图、会过期）。
+> 注意：搜索结果里 kb_file/kb_video 的 `target_id` 是条目 ID，file_id 要用 `entry_describe_entry` 返回的 `target_id`；
+> 在线文档里的图片在 `block_fetch_page` 正文中以 `<image file-id="…">` 出现，`file-id` 即 file_id。
+
 ---
 
 ## 💬 查看评论

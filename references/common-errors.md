@@ -14,6 +14,9 @@
 | 块创建不完整 | 缺少顶层 children | 确保 children 包含所有顶层块 ID |
 | 智能表格写入返回 999 | CellValue 结构不符合定义 | `text` 写成 `[{"text_run":{"content":"..."}}]`，详见下文错误五 |
 | 直调业务工具报 not found | 当前只暴露元工具（代理模式）却直接调用业务工具 | 改用 `call_tool(tool_name=...)` 代理调用，详见下文错误六 |
+| `file_download_file` 返回 10066「无下载权限」 | 当前账号对该条目只有查看、没有下载权限（页面内嵌图片同样受限） | **不重试、不绕过、不拿别的内容顶替**；告知用户并给 `/pages/<entry_id>` 链接，建议找知识库管理员/部门负责人开通「可查看/下载」，见 `references/files.md` |
+| `file_download_file` 返回 71「不存在ID为…的kb_file资源」 | 把条目 ID（如搜索结果 `target_id`）当成了 file_id | 用 `entry_describe_entry` 返回的 `target_id`，或页面正文 `<image file-id>` |
+| 给用户的图片显示成破图占位 | 用 `file_download_file` 返回的远程签名 URL 写了 `![](...)` | 先下载到本地（`scripts/fetch_media.py`），再用 `![文件名](本地绝对路径)`，见 `references/files.md` |
 | draft 发布成功但页面空白（静默失败） | draft 系列只写 Markdown 文件版本，不写 page block 正文 | 写正文改用 `entry_import_content_to_entry` / `block_update_page`，写后用 `block_fetch_page` 回读校验，详见 `references/draft.md` |
 
 ---

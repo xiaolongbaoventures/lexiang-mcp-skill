@@ -94,6 +94,9 @@ Step 3: 在 block_create_block_descendant 中，attachment/image block
 
 >⚠️ 暂不支持视频（VOD）上传，video block 请使用 `file_id` 字段。
 
+> 🖼️ **读取页面里的图片/附件/视频给用户看**：`block_fetch_page` 正文中图片为 `<image file-id="…"/>`、附件为 `<file file-id="…">`、视频为 `<video file-id="…">`，
+> `file-id` 可直接传给 `file_download_file`；按 `references/files.md`「给用户看/发图片、文件、视频」下载到本地后用本地路径展示，不要给远程 URL。
+
 ---
 
 ## Block 结构核心规则

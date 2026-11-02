@@ -93,6 +93,10 @@ cat plan.json
 
 Skill 自动更新，三个等价实现（Python 3 标准库 / Node ≥ 18 零依赖 / Windows PowerShell 5.1+），`check [--force]` / `apply` / `rollback` / `version`，均输出一行 JSON。修改时须三者同步，`test_update.py` 对三者跑同一组用例。使用规则见 `references/update.md`。
 
+### fetch_media.py
+
+把乐享图片/文件/视频下载到本地（默认 `~/Downloads/lexiang/`，可用 `--dir` 或 `LEXIANG_MEDIA_DIR` 覆盖），供对话里用本地绝对路径展示。仅 Python 3 标准库；同名同大小不重复下载，超过 50MB 需 `--yes`，输出一行 JSON（含 `markdown`，不含下载地址）。用法与无 Python 时的 curl / PowerShell 写法见 `references/files.md`「给用户看/发图片、文件、视频」，测试为 `test_fetch_media.py`。
+
 ### release.py
 
 维护者发布工具：`build --version X` 升版本、打 tag 并生成 `dist/*.zip`；`manifest --zip-url URL` 生成 `dist/latest.json`。见 `references/skill-maintenance.md`。
