@@ -74,7 +74,7 @@ Agent 只加载当前任务需要的参考文件。完整规则、易混淆场�
 | 智能表格、结构化数据 | [`references/smartsheet.md`](references/smartsheet.md) | 「智能表格」「新增一行」「查记录」 |
 | 草稿、发布 | [`references/draft.md`](references/draft.md) | 「先存草稿」「发布草稿」 |
 | 查看评论 | [`references/comment.md`](references/comment.md) | 「看看评论」「有没有讨论」 |
-| 更新、回滚本 Skill | [`references/update.md`](references/update.md) | 「更新乐享 skill」「回滚乐享 skill」 |
+| 自检、更新、回滚本 Skill | [`references/update.md`](references/update.md) | 「检查乐享 skill 更新」「乐享 skill 自检」「更新乐享 skill」「回滚乐享 skill」 |
 | 数据模型、URL、安全规则、工具发现 | [`references/base.md`](references/base.md) | 由上面的模块引用 |
 
 容易判错的几条：

@@ -1,6 +1,6 @@
 # Skill 自动更新
 
-> **触发场景**：每个会话首次使用乐享时的版本检查；用户说「更新乐享 skill」「升级乐享 skill」「回滚乐享 skill」「乐享 skill 是什么版本」。
+> **触发场景**：每个会话首次使用乐享时的版本检查（8 小时内最多一次）；用户说「检查乐享 skill 更新」「乐享 skill 自检」「更新乐享 skill」「升级乐享 skill」「回滚乐享 skill」「乐享 skill 是什么版本」，或用其他说法要求检查、更新、自检本 Skill。
 
 脚本：`scripts/update.py`（仅依赖 Python 3 标准库）。路径相对于本 Skill 目录（即 `SKILL.md` 所在目录），常见位置：
 
@@ -17,7 +17,7 @@ Python 命令依次尝试：`python3` → `python` → `py -3`（Windows）。�
 
 | 命令 | 作用 | 输出 |
 |------|------|------|
-| `python3 scripts/update.py check` | 检查新版本（24 小时内只查一次） | 一行 JSON |
+| `python3 scripts/update.py check` | 检查新版本（8 小时内只查一次） | 一行 JSON |
 | `python3 scripts/update.py check --force` | 忽略间隔，立即检查 | 一行 JSON |
 | `python3 scripts/update.py apply` | 下载、校验、安装新版本 | 一行 JSON，失败时退出码非 0 |
 | `python3 scripts/update.py rollback` | 回滚到上一版本 | 一行 JSON |
@@ -42,10 +42,12 @@ Python 命令依次尝试：`python3` → `python` → `py -3`（Windows）。�
 3. 同一会话只提示一次；用户未回应或拒绝则不再提
 4. **只有用户明确同意（如「更新」「好」）后**才运行 `apply`
 
-## 用户主动要求更新
+## 用户主动要求自检或更新
 
-1. 运行 `check --force`
-2. `update_available` → 告知版本号和 `notes`，询问是否更新；`up_to_date` → 告知已是最新版本；`error` → 告知暂时无法连接更新服务，稍后再试；`skipped`（`not_configured`）→ 告知当前安装未配置在线更新
+用户说「检查乐享 skill 更新」「乐享 skill 自检」「更新乐享 skill」「升级乐享 skill」等，或用其他说法要求检查、更新本 Skill 时：
+
+1. 运行 `check --force`（不受检查间隔限制）
+2. 用一两句话回复当前版本（`current`）和检查结果：`update_available` → 告知新版本号和 `notes`，询问是否更新；`up_to_date` → 告知已是最新版本；`error` → 告知暂时无法连接更新服务，稍后再试；`skipped`（`not_configured`）→ 告知当前安装未配置在线更新
 3. 用户确认后运行 `apply`
 
 ## apply 结果

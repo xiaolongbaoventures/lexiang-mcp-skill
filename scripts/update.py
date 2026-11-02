@@ -61,9 +61,9 @@ def load_config(skill_dir):
         cfg = {}
     url = str(cfg.get("manifest_url") or "").strip()
     try:
-        hours = float(cfg.get("check_interval_hours", 24))
+        hours = float(cfg.get("check_interval_hours", 8))
     except (TypeError, ValueError):
-        hours = 24.0
+        hours = 8.0
     return url, hours
 
 

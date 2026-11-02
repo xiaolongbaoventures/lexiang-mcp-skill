@@ -30,7 +30,7 @@ def make_skill(root, build=1, version="2.2.3-hj.1", manifest_url="__MANIFEST_URL
     (d / "scripts").mkdir(parents=True)
     (d / "SKILL.md").write_text("---\nname: %s\nversion: %s\n---\nold\n" % (NAME, version), encoding="utf-8")
     (d / "VERSION.json").write_text(json.dumps({"name": NAME, "version": version, "build": build}), encoding="utf-8")
-    (d / "update.json").write_text(json.dumps({"manifest_url": manifest_url, "check_interval_hours": 24}), encoding="utf-8")
+    (d / "update.json").write_text(json.dumps({"manifest_url": manifest_url, "check_interval_hours": 8}), encoding="utf-8")
     (d / "mcp.json").write_text("old-mcp", encoding="utf-8")
     shutil.copy2(SCRIPT, d / "scripts" / "update.py")
     return d
@@ -40,7 +40,7 @@ def make_zip(path, build=2, version="2.2.3-hj.2", prefix=NAME + "/", extra=None,
     files = {
         "SKILL.md": "---\nname: %s\nversion: %s\n---\nnew\n" % (NAME, version),
         "VERSION.json": json.dumps({"name": NAME, "version": version, "build": build}),
-        "update.json": json.dumps({"manifest_url": "__MANIFEST_URL__", "check_interval_hours": 24}),
+        "update.json": json.dumps({"manifest_url": "__MANIFEST_URL__", "check_interval_hours": 8}),
         "scripts/update.py": SCRIPT.read_text(encoding="utf-8"),
         "references/update.md": "new doc",
     }
@@ -65,7 +65,7 @@ def publish(root, zip_path, build=2, version="2.2.3-hj.2", sha=None, size=None, 
 
 
 def set_url(skill, url):
-    (skill / "update.json").write_text(json.dumps({"manifest_url": url, "check_interval_hours": 24}), encoding="utf-8")
+    (skill / "update.json").write_text(json.dumps({"manifest_url": url, "check_interval_hours": 8}), encoding="utf-8")
 
 
 def run(skill, *args):
