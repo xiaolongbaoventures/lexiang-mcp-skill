@@ -74,6 +74,7 @@ Agent 只加载当前任务需要的参考文件。完整规则、易混淆场�
 | 智能表格、结构化数据 | [`references/smartsheet.md`](references/smartsheet.md) | 「智能表格」「新增一行」「查记录」 |
 | 草稿、发布 | [`references/draft.md`](references/draft.md) | 「先存草稿」「发布草稿」 |
 | 查看评论 | [`references/comment.md`](references/comment.md) | 「看看评论」「有没有讨论」 |
+| 更新、回滚本 Skill | [`references/update.md`](references/update.md) | 「更新乐享 skill」「回滚乐享 skill」 |
 | 数据模型、URL、安全规则、工具发现 | [`references/base.md`](references/base.md) | 由上面的模块引用 |
 
 容易判错的几条：
@@ -93,6 +94,7 @@ Agent 只加载当前任务需要的参考文件。完整规则、易混淆场�
 - **先检索再回答**：用户同时提到乐享/知识库，以及文档、内容、资料、笔记、上次写的、写作风格时，先搜索或读取真实内容。
 - **大批量分批**：文件或条目超过 20 个时每批不超过 20，先告诉用户数量和策略。
 - **401 不重试**：内置连接器引导重新授权；其他平台引导续期。
+- **更新需用户同意**：每个会话首次使用时检查新版本；有新版本先完成任务，再在末尾问一句，用户同意才更新，更新后新开对话生效。
 
 细则在 [`SKILL.md`](SKILL.md) 和 [`references/base.md`](references/base.md)。调用参数以 MCP 实时 schema 为准（`get_tool_schema`）；若客户端只暴露元工具，业务工具经 `call_tool` 代理。
 
@@ -104,8 +106,11 @@ Agent 只加载当前任务需要的参考文件。完整规则、易混淆场�
 lexiang-skills/
 ├── SKILL.md                      # Agent 入口：意图识别与路由
 ├── mcp.json                      # MCP 配置模板
+├── VERSION.json                  # 本地版本（version + build）
+├── update.json                   # 更新地址与检查间隔
+├── CHANGELOG.md
 ├── README.md
-├── references/                   # 参考文档（22 份，按需加载）
+├── references/                   # 参考文档（23 份，按需加载）
 │   ├── base.md                   # 数据模型、URL、安全规则、工具发现
 │   ├── setup.md                  # Token、OAuth、续期、故障排查
 │   ├── search.md                 # 搜索、阅读、文件 AI 解析、目录
@@ -127,11 +132,15 @@ lexiang-skills/
 │   ├── folder-sync.md            # 本地文件夹增量同步方案
 │   ├── theme-config.md           # 主题配色配置说明
 │   ├── common-errors.md          # 高频错误速查
+│   ├── update.md                 # Skill 版本检查、更新、回滚
 │   └── skill-maintenance.md      # Skill 自查与反馈
 └── scripts/
     ├── upload-files.py           # 生成批量上传计划
     ├── sync-folder.ts            # 生成文件夹增量同步计划
+    ├── update.py                 # Skill 自动更新（check/apply/rollback）
+    ├── release.py                # 维护者发布打包
     ├── test_upload_files.py      # 上传脚本测试
+    ├── test_update.py            # 更新脚本测试
     └── README.md
 ```
 
@@ -168,6 +177,20 @@ npx ts-node scripts/sync-folder.ts --local ./docs --entry-id <parent_entry_id> \
 `sync-folder.ts` 会跳过 `node_modules/`、`.git/` 等，默认识别 `.md`、`.markdown`、`.txt`、`.json`、`.pdf`、`.doc`、`.docx`。新文件走三步上传，内容变更走文件版本更新，新目录创建 folder。删除不会自动同步到远端。
 
 更多参数见 [`scripts/README.md`](scripts/README.md)。
+
+---
+
+## 版本与更新
+
+当前版本见 [`VERSION.json`](VERSION.json)（`2.2.3-hj.1` = 上游 2.2.3 + 本分支第 1 次修订，`build` 为递增整数），变更见 [`CHANGELOG.md`](CHANGELOG.md)。
+
+```bash
+python3 scripts/update.py check --force   # 检查新版本
+python3 scripts/update.py apply           # 安装（Agent 仅在用户同意后执行）
+python3 scripts/update.py rollback        # 回滚到上一版本
+```
+
+`update.json` 中的 `manifest_url` 为占位符时不检查更新。使用规则见 [`references/update.md`](references/update.md)，发布流程见 [`references/skill-maintenance.md`](references/skill-maintenance.md)。
 
 ---
 

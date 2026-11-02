@@ -88,3 +88,11 @@ cat plan.json
 3. **同步状态文件**：`.lexiang-sync-state.json` 记录同步状态，请勿删除
 4. **大文件建议分批**：单次 MCP 调用的数据量有限制
 5. **Block 写入使用 MCP 工具**：直接调用 `block_convert_content_to_blocks` 将 Markdown/HTML 转换为块结构，无需手动构建
+
+### update.py
+
+Skill 自动更新（仅标准库）。`check [--force]` / `apply` / `rollback` / `version`，均输出一行 JSON。使用规则见 `references/update.md`。
+
+### release.py
+
+维护者发布工具：`build --version X` 升版本、打 tag 并生成 `dist/*.zip`；`manifest --zip-url URL` 生成 `dist/latest.json`。见 `references/skill-maintenance.md`。

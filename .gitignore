@@ -32,3 +32,7 @@ build/
 # Environment
 .env
 .env.local
+
+# Skill 自动更新 / 发布
+.last_update_check
+*.bak/

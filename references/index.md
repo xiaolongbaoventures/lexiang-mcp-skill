@@ -15,6 +15,7 @@
 | 编辑已有页面/Block 增删改移 | blocks.md | Block 操作、批量更新、Markdown 转 Block |
 | 上传/下载文件本体（PDF/Word/图片等） | files.md | 三步上传流程、MIME 类型、更新文件、下载（仅原始文件需求） |
 | 导入外部数据/腾讯会议 | connectors.md | 会议录制搜索/导入 |
+| 检查/更新/回滚本 Skill | update.md | update.py check/apply/rollback、用户确认流程 |
 
 ---
 
@@ -28,6 +29,7 @@
 | 分析文件（PDF/PPT/Word）内容 | search.md（直接 AI 解析，不下载） |
 | 上传文件 | files.md |
 | 会议导入 | connectors.md → writer.md |
+| 更新 Skill | update.md |
 | 排查错误 | common-errors.md |
 
 ---

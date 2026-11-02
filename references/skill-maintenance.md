@@ -119,3 +119,26 @@ AI 判断：这是平台功能缺失，不是用户操作问题
 - 修改 Skill 文件后，应保持各变体（SLOT_EXAMPLES.md）的一致性
 - 进化修改仅限于**参数修正、工具名更新、明确性改进**，不要随意改变文档结构
 - 若当前运行时无写权限，则只输出修正建议或补丁内容
+---
+
+## 🚀 版本发布（维护者）
+
+> 仅维护者在源码仓库中操作；最终用户侧的更新流程见 `references/update.md`。
+
+版本号格式 `上游版本-hj.N`（如 `2.2.3-hj.1`）；`VERSION.json` 的 `build` 为递增整数，客户端只按 `build` 判断新旧。
+
+```bash
+# 1. 在 CHANGELOG.md 新增该版本条目（含一行「摘要：」，作为更新提示的 notes），提交
+# 2. 升版本、提交、打 tag、打包（要求工作区干净）
+python3 scripts/release.py build --version 2.2.3-hj.2
+#    → dist/lexiang-knowledge-base-2.2.3-hj.2.zip，并输出 sha256 / size
+# 3. 将 zip 上传到文件分享服务，拿到下载地址后生成 manifest
+python3 scripts/release.py manifest --zip-url <zip 下载地址>
+#    → dist/latest.json
+# 4. 上传 dist/latest.json，覆盖固定地址上的旧 latest.json
+```
+
+- 上传由维护者的文件分享服务完成；每次发布只覆盖 `latest.json`，各版本 zip 保留独立地址
+- `update.json` 的 `manifest_url` 必须指向 `latest.json` 的固定地址；保持 `__MANIFEST_URL__` 占位符时客户端不检查更新
+- `dist/` 不入库；zip 由 `git archive` 生成，不含 `dist/`、`__pycache__`、`.last_update_check`
+- 发布前运行测试：`python3 -m pytest scripts/`
