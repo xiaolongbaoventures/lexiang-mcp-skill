@@ -1,3 +1,4 @@
 dist/ export-ignore
 __pycache__/ export-ignore
 .last_update_check export-ignore
+scripts/update.ps1 -text diff

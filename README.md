@@ -138,6 +138,8 @@ lexiang-skills/
     ├── upload-files.py           # 生成批量上传计划
     ├── sync-folder.ts            # 生成文件夹增量同步计划
     ├── update.py                 # Skill 自动更新（check/apply/rollback）
+    ├── update.mjs                # 同上，Node ≥ 18 版
+    ├── update.ps1                # 同上，Windows PowerShell 版
     ├── release.py                # 维护者发布打包
     ├── test_upload_files.py      # 上传脚本测试
     ├── test_update.py            # 更新脚本测试
@@ -188,6 +190,9 @@ npx ts-node scripts/sync-folder.ts --local ./docs --entry-id <parent_entry_id> \
 python3 scripts/update.py check --force   # 检查新版本
 python3 scripts/update.py apply           # 安装（Agent 仅在用户同意后执行）
 python3 scripts/update.py rollback        # 回滚到上一版本
+# 无 Python 时用等价实现（命令与输出相同）：
+node scripts/update.mjs check --force
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/update.ps1 check --force
 ```
 
 `update.json` 中的 `manifest_url` 为占位符时不检查更新。使用规则见 [`references/update.md`](references/update.md)，发布流程见 [`references/skill-maintenance.md`](references/skill-maintenance.md)。

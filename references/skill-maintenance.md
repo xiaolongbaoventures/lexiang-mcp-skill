@@ -141,4 +141,5 @@ python3 scripts/release.py manifest --zip-url <zip 下载地址>
 - 上传由维护者的文件分享服务完成；每次发布只覆盖 `latest.json`，各版本 zip 保留独立地址
 - `update.json` 的 `manifest_url` 必须指向 `latest.json` 的固定地址；保持 `__MANIFEST_URL__` 占位符时客户端不检查更新
 - `dist/` 不入库；zip 由 `git archive` 生成，不含 `dist/`、`__pycache__`、`.last_update_check`
-- 发布前运行测试：`python3 -m pytest scripts/`
+- 发布前运行测试：`python3 -m pytest scripts/`（需安装 node 和 pwsh，三个更新脚本跑同一组用例；缺少时对应用例跳过）
+- `scripts/update.ps1` 须保持 UTF-8 with BOM 编码（Windows PowerShell 5.1 依赖 BOM 识别中文）

@@ -19,7 +19,7 @@ description: "乐享知识库 MCP 全功能 Skill。当用户提到「乐享」�
 5. **强制检索**：当用户消息同时包含「乐享/知识库」等平台词 + 「文档/论文/文章/内容/资料/笔记/之前写的/上次的/风格」等内容词时，**必须先调用 `search_kb_search` 或 `search_kb_embedding_search` 获取实际内容**，不得凭空分析或直接生成回答
 6. **大批量保护**：文件/条目数量 > 20 个时，**必须分批执行**（每批 ≤ 20 个）；操作前告知用户数量和策略，禁止一次性提交导致 token 超限，详见 `references/files.md`
 7. **安装/配置完成时不加提示**：只汇报完成的工作和验证结果，不预先提示 Token 续期或「内置连接器会忽略手动配置」，这两类提示只在实际出现过期/401 或检测到冲突时给出，详见 `references/setup.md`
-8. **版本更新检查**：每个会话首次使用乐享时，在本 Skill 目录运行 `python3 scripts/update.py check`（失败再试 `python`）；命令失败、无 Python 或结果不是 `update_available` 时**直接忽略，继续用户任务**。若为 `update_available`：**先完成用户任务**，再在回复末尾加**一行**询问是否更新到新版本（附 `notes`）；**仅在用户明确同意后**运行 `apply`，更新后提示用户新开对话生效。**禁止静默自动更新**。用户说「检查乐享 skill 更新」「乐享 skill 自检」「更新乐享 skill」「升级乐享 skill」「回滚乐享 skill」「乐享 skill 是什么版本」等，或用其他说法要求检查/更新/自检本 Skill 时，按 `references/update.md`「用户主动要求」处理（立即检查，不受间隔限制）
+8. **版本更新检查**：每个会话首次使用乐享时，在本 Skill 目录运行 `python3 scripts/update.py check`，不可用（报错/无输出/非 JSON）时依次换 `python`、`py -3`、`node scripts/update.mjs`、（Windows）`powershell -NoProfile -ExecutionPolicy Bypass -File scripts/update.ps1`，详见 `references/update.md`；都不可用或结果不是 `update_available` 时**直接忽略，继续用户任务**。若为 `update_available`：**先完成用户任务**，再在回复末尾加**一行**询问是否更新到新版本（附 `notes`）；**仅在用户明确同意后**运行 `apply`，更新后提示用户新开对话生效。**禁止静默自动更新**。用户说「检查乐享 skill 更新」「乐享 skill 自检」「更新乐享 skill」「升级乐享 skill」「回滚乐享 skill」「乐享 skill 是什么版本」等，或用其他说法要求检查/更新/自检本 Skill 时，按 `references/update.md`「用户主动要求」处理（立即检查，不受间隔限制）
 
 ---
 

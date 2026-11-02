@@ -64,7 +64,7 @@ def verify_zip(path, build):
         bad = [n for n in names if not n.startswith(prefix)]
         if bad:
             die("zip 顶层目录不正确：%s" % bad[:3])
-        for req in ("SKILL.md", "VERSION.json", "update.json", "scripts/update.py"):
+        for req in ("SKILL.md", "VERSION.json", "update.json", "scripts/update.py", "scripts/update.mjs", "scripts/update.ps1"):
             if prefix + req not in names:
                 die("zip 缺少 %s" % req)
         for junk in ("dist/", "__pycache__", ".last_update_check"):

@@ -89,9 +89,9 @@ cat plan.json
 4. **大文件建议分批**：单次 MCP 调用的数据量有限制
 5. **Block 写入使用 MCP 工具**：直接调用 `block_convert_content_to_blocks` 将 Markdown/HTML 转换为块结构，无需手动构建
 
-### update.py
+### update.py / update.mjs / update.ps1
 
-Skill 自动更新（仅标准库）。`check [--force]` / `apply` / `rollback` / `version`，均输出一行 JSON。使用规则见 `references/update.md`。
+Skill 自动更新，三个等价实现（Python 3 标准库 / Node ≥ 18 零依赖 / Windows PowerShell 5.1+），`check [--force]` / `apply` / `rollback` / `version`，均输出一行 JSON。修改时须三者同步，`test_update.py` 对三者跑同一组用例。使用规则见 `references/update.md`。
 
 ### release.py
 

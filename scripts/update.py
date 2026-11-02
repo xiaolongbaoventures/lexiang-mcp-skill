@@ -7,6 +7,9 @@
     python3 scripts/update.py rollback          # 回滚到上一版本（.bak）
     python3 scripts/update.py version           # 输出本地版本
 
+同等实现：scripts/update.mjs（Node ≥ 18）、scripts/update.ps1（Windows PowerShell 5.1 / pwsh 7），
+命令、输出 JSON 和行为保持一致，修改时须三者同步（测试见 scripts/test_update.py）。
+
 只会改动本 Skill 目录及其同级备份目录 `<目录名>.bak`，不触碰 MCP 客户端配置或任何密钥。
 """
 
@@ -32,6 +35,8 @@ MANIFEST_TIMEOUT = 5
 DOWNLOAD_TIMEOUT = 30
 MAX_ZIP_SIZE = 50 * 1024 * 1024
 DISABLED_SKILL_MD = "SKILL.md.bak-disabled"  # 备份目录里的 SKILL.md 改名，避免被客户端当成第二个 Skill 加载
+# 仅供测试注入故障：rename_blocked（模拟 Windows 目录被占用）/ move / post_install
+FAULT = os.environ.get("LEXIANG_UPDATE_FAULT", "")
 
 
 class UpdateError(Exception):
@@ -41,11 +46,11 @@ class UpdateError(Exception):
 # ---------------------------------------------------------------- 基础工具
 
 def _out(obj):
-    print(json.dumps(obj, ensure_ascii=False), flush=True)
+    print(json.dumps(obj, ensure_ascii=False, separators=(",", ":")), flush=True)
 
 
 def _read_json(path):
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, "r", encoding="utf-8-sig") as f:
         return json.load(f)
 
 
@@ -94,7 +99,7 @@ def _open(url, timeout):
 def fetch_manifest(url):
     with _open(url, MANIFEST_TIMEOUT) as resp:
         raw = resp.read(256 * 1024)
-    m = json.loads(raw.decode("utf-8"))
+    m = json.loads(raw.decode("utf-8-sig"))
     if not isinstance(m, dict):
         raise ValueError("manifest is not an object")
     for key in ("name", "version", "build", "zip_url", "sha256"):
@@ -106,7 +111,7 @@ def fetch_manifest(url):
 
 def _read_last_check(skill_dir):
     try:
-        return float((Path(skill_dir) / CHECK_FILE).read_text(encoding="utf-8").strip())
+        return float((Path(skill_dir) / CHECK_FILE).read_text(encoding="utf-8-sig").strip())
     except (OSError, ValueError):
         return None
 
@@ -200,7 +205,7 @@ def _safe_extract(zip_path, dest_root, expected_build):
             if prefix + required not in names:
                 raise UpdateError("安装包缺少 %s" % required)
         try:
-            inner = json.loads(zf.read(prefix + "VERSION.json").decode("utf-8"))
+            inner = json.loads(zf.read(prefix + "VERSION.json").decode("utf-8-sig"))
             if inner.get("name") != SKILL_NAME or int(inner.get("build")) != expected_build:
                 raise ValueError
         except (ValueError, TypeError):
@@ -249,12 +254,18 @@ def _enable_backup(bak):
         os.replace(p, Path(bak) / "SKILL.md")
 
 
+def _rename(src, dst, skill_dir=None):
+    if FAULT == "rename_blocked" and skill_dir is not None and Path(src) == Path(skill_dir):
+        raise PermissionError("simulated: directory in use")
+    os.rename(src, dst)
+
+
 def _install(skill_dir, new_dir, bak):
     """skill_dir → bak，new_dir → skill_dir。优先整体改名，失败（如 Windows 占用）则改为内容复制。"""
     if bak.exists():
         shutil.rmtree(bak)
     try:
-        os.rename(skill_dir, bak)
+        _rename(skill_dir, bak, skill_dir)
     except OSError:
         shutil.copytree(skill_dir, bak, symlinks=True)
         try:
@@ -264,6 +275,10 @@ def _install(skill_dir, new_dir, bak):
             raise
         return
     try:
+        if FAULT == "move":
+            skill_dir.mkdir()
+            (skill_dir / "partial").write_text("x")
+            raise OSError("simulated: move interrupted")
         shutil.move(str(new_dir), str(skill_dir))
     except Exception:
         shutil.rmtree(skill_dir, ignore_errors=True)
@@ -284,6 +299,8 @@ def _restore(skill_dir, bak):
 
 
 def _post_install(skill_dir, bak, expected_build):
+    if FAULT == "post_install":
+        raise OSError("simulated: disk full")
     old_check = bak / CHECK_FILE
     if old_check.exists():
         shutil.copy2(old_check, skill_dir / CHECK_FILE)

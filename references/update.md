@@ -2,14 +2,25 @@
 
 > **触发场景**：每个会话首次使用乐享时的版本检查（8 小时内最多一次）；用户说「检查乐享 skill 更新」「乐享 skill 自检」「更新乐享 skill」「升级乐享 skill」「回滚乐享 skill」「乐享 skill 是什么版本」，或用其他说法要求检查、更新、自检本 Skill。
 
-脚本：`scripts/update.py`（仅依赖 Python 3 标准库）。路径相对于本 Skill 目录（即 `SKILL.md` 所在目录），常见位置：
+脚本有三个等价实现（命令、输出、行为完全一致，任选一个能运行的）：`scripts/update.py`（Python 3 标准库）、`scripts/update.mjs`（Node ≥ 18，零依赖）、`scripts/update.ps1`（Windows PowerShell 5.1 / pwsh 7）。路径相对于本 Skill 目录（即 `SKILL.md` 所在目录），常见位置：
 
 | 客户端 | Skill 目录 |
 |--------|-----------|
 | WorkBuddy | `~/.workbuddy/skills/lexiang-knowledge-base/` |
 | Codex | `~/.codex/skills/lexiang-knowledge-base/` |
 
-Python 命令依次尝试：`python3` → `python` → `py -3`（Windows）。都不可用时**放弃更新相关操作，继续用户任务**，不要求用户安装 Python。
+### 运行时选择
+
+按顺序尝试，第一个**输出一行合法 JSON** 的即可，之后同一会话沿用它：
+
+1. `python3 scripts/update.py …`
+2. `python scripts/update.py …`
+3. `py -3 scripts/update.py …`（Windows）
+4. `node scripts/update.mjs …`
+5. `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/update.ps1 …`（Windows；也可用 `pwsh`）
+
+- Windows 上 `python3` / `python` 可能是打开 Microsoft Store 的占位程序：**命令报错、无输出或输出不是 JSON，一律视为不可用，换下一个**，不要按提示去安装
+- 全部不可用时**静默放弃更新相关操作，继续用户任务**，不要求用户安装任何运行时
 
 ---
 
@@ -17,11 +28,13 @@ Python 命令依次尝试：`python3` → `python` → `py -3`（Windows）。�
 
 | 命令 | 作用 | 输出 |
 |------|------|------|
-| `python3 scripts/update.py check` | 检查新版本（8 小时内只查一次） | 一行 JSON |
-| `python3 scripts/update.py check --force` | 忽略间隔，立即检查 | 一行 JSON |
-| `python3 scripts/update.py apply` | 下载、校验、安装新版本 | 一行 JSON，失败时退出码非 0 |
-| `python3 scripts/update.py rollback` | 回滚到上一版本 | 一行 JSON |
-| `python3 scripts/update.py version` | 查看本地版本 | 一行 JSON |
+| `<运行时> check` | 检查新版本（8 小时内只查一次） | 一行 JSON |
+| `<运行时> check --force` | 忽略间隔，立即检查 | 一行 JSON |
+| `<运行时> apply` | 下载、校验、安装新版本 | 一行 JSON，失败时退出码非 0 |
+| `<运行时> rollback` | 回滚到上一版本 | 一行 JSON |
+| `<运行时> version` | 查看本地版本 | 一行 JSON |
+
+`<运行时>` 即上面选中的命令，如 `python3 scripts/update.py`、`node scripts/update.mjs`。
 
 `check` 的 `status`：
 
