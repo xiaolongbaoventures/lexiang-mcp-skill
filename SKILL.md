@@ -1,6 +1,6 @@
 ---
 name: lexiang-knowledge-base
-version: 2.2.3-hj.1
+version: 2.2.3-hj.2
 description: "乐享知识库 MCP 全功能 Skill。当用户提到「乐享」「知识库」「个人知识库」「我的知识库」「lexiang」，或提供 lexiangla.com 链接，或涉及知识库的搜索/写入/编辑/文件/配置/评论/草稿/智能表格等操作时使用；用户要求检查、更新、升级、回滚乐享 skill 或让乐享 skill 自检时也使用。"
 ---
 
@@ -146,4 +146,4 @@ MCP Tool: whoami
 
 ---
 
-> Skill version: **2.2.3-hj.1**
+> Skill version: **2.2.3-hj.2**
